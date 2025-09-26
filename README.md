@@ -51,10 +51,10 @@ const data = await res.json();
 
 📸 Capturas de pantalla
 ### Login Backend
-![Login Backend](images/postLogin.png)
+![Login Backend](./images/postLogin.png)
 
 ### Registro Backend
-![Registro Backend](images/postRegister.png)
+![Registro Backend](./images/postRegister.png)
 
 
 🔒 Seguridad

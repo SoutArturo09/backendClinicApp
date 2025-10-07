@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors'; // ✅ Importamos cors
 import authRoutes from './routes/authRoutes';
+import medicRoutes from './routes/medicRoutes';
 
 dotenv.config();
 
@@ -17,7 +18,10 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/medic', medicRoutes);
 
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
 });
+
+export default app

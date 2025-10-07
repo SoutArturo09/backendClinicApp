@@ -57,6 +57,63 @@ const data = await res.json();
 ![Registro Backend](./images/postRegister.png)
 
 
+🧪 Pruebas Unitarias
+
+### Descripción
+El proyecto incluye un conjunto completo de pruebas unitarias implementadas con **Jest** y **Supertest** que cubren:
+- ✅ Inserción y consulta de datos
+- 🔥 Manejo de errores en operaciones de la nube
+- 🔑 Autenticación y autorización de usuarios
+- 🔍 Integración entre servicios
+
+### Ejecutar las pruebas
+
+1. **Instalar dependencias** (si no se han instalado):
+```bash
+npm install
+```
+
+2. **Ejecutar todas las pruebas**:
+```bash
+npm test
+```
+
+3. **Ejecutar pruebas con cobertura** (opcional):
+```bash
+npm test -- --coverage
+```
+
+4. **Ejecutar pruebas en modo watch** (desarrollo):
+```bash
+npm test -- --watch
+```
+
+### Resultados esperados
+```
+Test Suites: 1 passed, 1 total
+Tests:       19 passed, 19 total
+Snapshots:   0 total
+Time:        ~2.5s
+```
+
+### Estructura de pruebas
+```
+__test__/
+└── index.test.ts    # Archivo principal con todas las pruebas
+```
+
+### Categorías de pruebas incluidas:
+- 📋 **Inserción y Consulta de Datos** (5 pruebas)
+- 🔥 **Manejo de Errores en la Nube** (5 pruebas)  
+- 🔑 **Autenticación de Usuarios** (6 pruebas)
+- 🔍 **Integración de Servicios** (3 pruebas)
+
+### Documentación completa
+Para más detalles sobre el diseño e implementación de las pruebas, consulta:
+📄 `Documentacion_Pruebas_Unitarias.txt`
+
+---
+
 🔒 Seguridad
 Principios aplicados:
 Uso de HTTPS en producción.

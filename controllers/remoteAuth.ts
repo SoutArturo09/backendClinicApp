@@ -15,6 +15,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
     const { email, password } = value;
 
+    // 1️⃣ Crear usuario y enviar correo de confirmación automáticamente
     const { data, error: supaError } = await supabase.auth.signUp({
       email,
       password,
@@ -22,18 +23,22 @@ export const registerUser = async (req: Request, res: Response) => {
 
     if (supaError) return res.status(400).json({ msg: supaError.message });
 
-    const { data: sessionData, error: sessionError } = await supabase.auth.admin.generateLink({
-      type: 'magiclink',
-      email,
-    });
+    // 2️⃣ Si el correo aún no está confirmado, no devolvemos token
+    if (!data.session) {
+      return res.status(200).json({
+        msg: "Se ha enviado un correo de confirmación. Verifica tu email antes de iniciar sesión.",
+      });
+    }
 
-    res.status(201).json({
+    // 3️⃣ Si está confirmado (casos especiales), devolvemos token
+    return res.status(201).json({
       id: data.user?.id,
       email: data.user?.email,
+      token: data.session?.access_token,
     });
   } catch (err) {
-    console.error('❌ Error en registerUser:', err);
-    res.status(500).json({ msg: 'Error interno del servidor' });
+    console.error("❌ Error en registerUser:", err);
+    res.status(500).json({ msg: "Error interno del servidor" });
   }
 };
 
@@ -44,6 +49,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
     const { email, password } = value;
 
+    // 1️⃣ Iniciar sesión
     const { data, error: supaError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -51,13 +57,21 @@ export const loginUser = async (req: Request, res: Response) => {
 
     if (supaError) return res.status(400).json({ msg: supaError.message });
 
-    res.json({
+    // 2️⃣ Si el usuario no ha confirmado su correo, bloquear acceso
+    if (!data.user?.email_confirmed_at) {
+      return res.status(403).json({
+        msg: "Por favor, confirma tu correo antes de acceder.",
+      });
+    }
+
+    // 3️⃣ Devolver token válido
+    return res.json({
       id: data.user?.id,
       email: data.user?.email,
       token: data.session?.access_token,
     });
   } catch (err) {
-    console.error('❌ Error en loginUser:', err);
-    res.status(500).json({ msg: 'Error interno del servidor' });
+    console.error("❌ Error en loginUser:", err);
+    res.status(500).json({ msg: "Error interno del servidor" });
   }
 };

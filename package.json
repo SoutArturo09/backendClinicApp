@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --detectOpenHandles --forceExit",
-    "dev": "nodemon --watch './**/*.ts' index.ts"
+    "dev": "node api.js && nodemon --watch './**/*.ts' index.ts"
   },
   "keywords": [],
   "author": "",

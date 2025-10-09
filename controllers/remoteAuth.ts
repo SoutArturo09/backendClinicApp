@@ -10,37 +10,40 @@ const registerSchema = Joi.object({
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
+    // 1️⃣ Validar datos
     const { error, value } = registerSchema.validate(req.body);
     if (error) return res.status(400).json({ msg: error.details[0].message });
 
     const { email, password } = value;
 
-    // 1️⃣ Crear usuario y enviar correo de confirmación automáticamente
+    // 2️⃣ Intentar crear usuario
     const { data, error: supaError } = await supabase.auth.signUp({
       email,
       password,
     });
 
-    if (supaError) return res.status(400).json({ msg: supaError.message });
-
-    // 2️⃣ Si el correo aún no está confirmado, no devolvemos token
-    if (!data.session) {
-      return res.status(200).json({
-        msg: "Se ha enviado un correo de confirmación. Verifica tu email antes de iniciar sesión.",
-      });
+    // 3️⃣ Manejo de error si el correo ya está registrado
+    if (supaError) {
+      if (supaError.message.includes('already registered')) {
+        return res.status(409).json({
+          msg: 'Este correo ya está registrado y confirmado. Intenta iniciar sesión.',
+        });
+      }
+      return res.status(400).json({ msg: supaError.message });
     }
 
-    // 3️⃣ Si está confirmado (casos especiales), devolvemos token
+    // 4️⃣ Usuario creado correctamente, pendiente de confirmación
     return res.status(201).json({
+      msg: 'Se ha enviado un correo de confirmación. Revisa tu email antes de iniciar sesión.',
       id: data.user?.id,
       email: data.user?.email,
-      token: data.session?.access_token,
     });
   } catch (err) {
-    console.error("❌ Error en registerUser:", err);
-    res.status(500).json({ msg: "Error interno del servidor" });
+    console.error('❌ Error en registerUser:', err);
+    res.status(500).json({ msg: 'Error interno del servidor' });
   }
 };
+
 
 export const loginUser = async (req: Request, res: Response) => {
   try {
